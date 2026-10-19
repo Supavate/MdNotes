@@ -4,6 +4,10 @@ Noted is a local web app for browsing and editing Markdown notes in the project'
 
 ## Build a Windows executable
 
+Run `.\run.bat` in PowerShell, or double-click it, to launch `MdNotes.exe`. If the executable is missing, the launcher installs build dependencies and builds it first. Building requires Node.js with npm and Python. To rebuild after app changes, delete the old executable and run the launcher again.
+
+For a manual build:
+
 From the project folder, run:
 
 ```powershell

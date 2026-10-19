@@ -22,6 +22,22 @@ export function createSidebar({
   let selectedItem: SelectedItem | null = null;
   let draggedPath: string | null = null;
 
+  function clearDropIndicators(): void {
+    treeElement.querySelectorAll(".drop-before, .drop-after, .drop-inside")
+      .forEach((element) => element.classList.remove("drop-before", "drop-after", "drop-inside"));
+  }
+
+  function endDrag(): void {
+    draggedPath = null;
+    clearDropIndicators();
+    treeElement.querySelectorAll(".dragging")
+      .forEach((element) => element.classList.remove("dragging"));
+  }
+
+  document.addEventListener("dragend", endDrag, true);
+  document.addEventListener("drop", endDrag);
+  window.addEventListener("blur", endDrag);
+
   function setSelected(path: string, type: SelectedItem["type"]): void {
     selectedItem = { path, type };
     treeElement.querySelectorAll<HTMLElement>(".tree-row.selected").forEach((row) => row.classList.remove("selected"));
@@ -218,9 +234,9 @@ export function createSidebar({
   async function dropOnItem(event: DragEvent, item: NoteTreeItem, row: HTMLElement): Promise<void> {
     event.preventDefault();
     event.stopPropagation();
-    if (row.querySelector(".rename-input")) return;
     const sourcePath = event.dataTransfer?.getData("text/plain") || draggedPath;
-    row.classList.remove("drop-before", "drop-after", "drop-inside");
+    endDrag();
+    if (row.querySelector(".rename-input")) return;
     if (!sourcePath || sourcePath === item.path) return;
     const source = findItem(sourcePath);
     if (!source) return;
@@ -262,12 +278,9 @@ export function createSidebar({
         event.dataTransfer.setData("text/plain", item.path);
       }
     });
-    row.addEventListener("dragend", () => {
-      draggedPath = null;
-      treeElement.querySelectorAll(".drop-before, .drop-after, .drop-inside, .dragging")
-        .forEach((element) => element.classList.remove("drop-before", "drop-after", "drop-inside", "dragging"));
-    });
+    row.addEventListener("dragend", endDrag);
     row.addEventListener("dragover", (event: DragEvent) => {
+      clearDropIndicators();
       if (!draggedPath || draggedPath === item.path) return;
       event.preventDefault();
       if (event.dataTransfer) event.dataTransfer.dropEffect = "move";

@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "tsc --project tsconfig.json --noEmit && esbuild src/ts/app.ts --bundle --format=esm --target=es2022 --outfile=src/app.bundle.js",
+    "check": "tsc --project tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.11",
+    "typescript": "^5.9.3"
+  }
+}

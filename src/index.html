@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>Notes — Markdown workspace</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Notes sidebar">
+        <div class="sidebar-actions" aria-label="Create items">
+          <button class="sidebar-action" id="new-note-button" type="button" aria-label="Create a note" title="Create a note">
+            <span class="sidebar-action-icon" aria-hidden="true">＋</span>
+            <span class="sidebar-action-label">New note</span>
+          </button>
+          <button class="sidebar-action" id="new-folder-button" type="button" aria-label="Create a folder" title="Create a folder">
+            <span class="sidebar-action-icon" aria-hidden="true">▰</span>
+            <span class="sidebar-action-label">New folder</span>
+          </button>
+        </div>
+        <nav id="file-tree" class="file-tree" aria-label="Note files"></nav>
+      </aside>
+
+      <main class="main">
+        <section class="welcome" id="welcome">
+          <div class="welcome-icon" aria-hidden="true">✎</div>
+          <p class="eyebrow">A LITTLE SPACE FOR YOUR THOUGHTS</p>
+          <h1>Your notes, all in one place.</h1>
+          <p class="welcome-copy">Choose a note from the sidebar to start reading, or create a new one to get going.</p>
+          <button class="welcome-create" id="welcome-new-note" type="button">＋ Create a note</button>
+        </section>
+
+        <section class="editor-view" id="editor-view" hidden>
+          <div class="note-header">
+            <div class="note-heading">
+              <div class="note-kicker">NOTE</div>
+              <h1 id="note-title"></h1>
+            </div>
+          </div>
+          <section class="pane editor-pane" aria-label="Markdown note editor">
+            <div class="pane-heading"><span>LIVE NOTE</span><span class="pane-meta">Markdown · editable</span></div>
+            <article id="editor" class="markdown-body editor-content" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Editable Markdown preview" data-placeholder="Start writing…"></article>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/app.bundle.js"></script>
+  </body>
+</html>

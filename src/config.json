@@ -1,0 +1,22 @@
+{
+  "editor": {
+    "autoSaveDelayMs": 100,
+    "convertCodeFenceOnEnter": true,
+    "removeEmptyCodeBlockOnBackspace": true,
+    "copyListsWithoutMarkers": true
+  },
+  "codeBlocks": {
+    "copyFeedbackMs": 1400,
+    "emptyLanguageLabel": "CODE"
+  },
+  "notes": {
+    "newNoteName": "Untitled.md",
+    "newFolderName": "New folder",
+    "defaultNoteExtension": ".md"
+  },
+  "server": {
+    "defaultPort": 8000,
+    "portSearchAttempts": 100,
+    "openBrowser": true
+  }
+}

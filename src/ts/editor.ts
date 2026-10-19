@@ -328,6 +328,20 @@ export function createEditor({ editor, request, showToast, config }: EditorOptio
     return true;
   }
 
+  function leaveCodeBlock(event: KeyboardEvent): boolean {
+    if (event.key !== "Enter" || !(event.ctrlKey || event.metaKey) || event.shiftKey || event.altKey) return false;
+    const codeBlock = caretBlock(".code-block");
+    if (!codeBlock) return false;
+
+    event.preventDefault();
+    const paragraph = document.createElement("p");
+    paragraph.innerHTML = "<br>";
+    codeBlock.after(paragraph);
+    focusParagraph(paragraph);
+    scheduleSave();
+    return true;
+  }
+
   function removeEmptyCodeBlock(event: KeyboardEvent): boolean {
     if (!config.editor.removeEmptyCodeBlockOnBackspace) return false;
     if (event.key !== "Backspace" || event.shiftKey || event.ctrlKey || event.metaKey) return false;
@@ -440,7 +454,7 @@ export function createEditor({ editor, request, showToast, config }: EditorOptio
       save();
       return;
     }
-    if (handleTableKeydown(event)) return;
+    if (leaveCodeBlock(event) || handleTableKeydown(event)) return;
     if (insertCodeBlockFromFence(event) || insertTableFromHeader(event) ||
         insertHeadingFromMarkdown(event) || removeEmptyCodeBlock(event)) return;
     startParagraphAfterHeading(event);

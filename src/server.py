@@ -18,7 +18,7 @@ else:
     ROOT = Path(__file__).resolve().parent.parent
     SOURCE_DIR = ROOT / "src"
 DATA_DIR = (ROOT / "data").resolve()
-ORDER_FILE = ROOT / ".notes-order.json"
+ORDER_FILE = DATA_DIR / ".notes-order.json"
 EXTERNAL_CONFIG_FILE = ROOT / "config.json"
 CONFIG_FILE = (
     EXTERNAL_CONFIG_FILE

@@ -13,7 +13,7 @@ python -m pip install -r requirements-build.txt
 python -m PyInstaller --noconfirm --clean --onefile --console --name MdNotes --distpath . --workpath build\pyinstaller --add-data "src\index.html;src" --add-data "src\styles.css;src" --add-data "src\app.bundle.js;src" --add-data "src\config.json;src" src\server.py
 ```
 
-This creates `MdNotes.exe` in the project folder. Run it there to use the existing `data\` folder and `.notes-order.json`; no note files need to be copied or moved. The executable reads an optional adjacent `config.json`, otherwise it uses the packaged default. The default port and search limit are controlled by `server.defaultPort` and `server.portSearchAttempts`.
+This creates `MdNotes.exe` in the project folder. Run it there to use the existing `data\` folder and `data\.notes-order.json`; no note files need to be copied or moved. The executable reads an optional adjacent `config.json`, otherwise it uses the packaged default. The default port and search limit are controlled by `server.defaultPort` and `server.portSearchAttempts`.
 
 ## Run
 
@@ -51,7 +51,7 @@ data/                         Note files and their subfolders
 - **Frontend:** `src/index.html` defines the workspace, `src/styles.css` styles it, and TypeScript source modules in `src/ts/` separate API access, Markdown conversion, editor behavior, and sidebar interactions. `npm run build` type-checks those modules and bundles them into the single browser-ready `src/app.bundle.js` file. The rendered note itself is the editor; edits keep the normal undo history and save automatically. The compact fixed sidebar expands on hover or keyboard focus. Double-click an item to rename it inline and press Enter to save; drag items onto folders to move them, or to a sibling position to reorder them.
 - **Backend:** `src/server.py` serves the frontend and exposes a small JSON API for listing the tree, reading and saving notes, creating folders and notes, and moving or renaming items. It uses only Python's standard library.
 - **Configuration:** `src/config.json` controls editor behavior, new note/folder defaults, and server startup. `server.defaultPort` sets the preferred port; `server.portSearchAttempts` bounds the forward search if it is occupied. In the executable build, an adjacent `config.json` takes precedence so settings can be changed without rebuilding.
-- **Storage:** Notes remain ordinary files inside `data/`; no database is used. The sidebar includes `.md`, `.markdown`, and `.txt` files. Manual sidebar ordering is saved in `.notes-order.json` at the project root.
+- **Storage:** Notes remain ordinary files inside `data/`; no database is used. The sidebar includes `.md`, `.markdown`, and `.txt` files. Manual sidebar ordering is saved in `data/.notes-order.json`, so it can sync with a separate private notes repository.
 - **Local access:** The server binds to `127.0.0.1`, so it is available from the same computer rather than being exposed to the local network. API paths are checked to keep file operations inside `data/`.
 
 ## API overview

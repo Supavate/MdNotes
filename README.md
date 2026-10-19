@@ -11,6 +11,7 @@ npm install
 npm run build
 python -m pip install -r requirements-build.txt
 python -m PyInstaller --noconfirm --clean --onefile --console --name MdNotes --distpath . --workpath build\pyinstaller --add-data "src\index.html;src" --add-data "src\styles.css;src" --add-data "src\app.bundle.js;src" --add-data "src\config.json;src" src\server.py
+.\MdNotes.exe
 ```
 
 This creates `MdNotes.exe` in the project folder. Run it there to use the existing `data\` folder and `data\.notes-order.json`; no note files need to be copied or moved. The executable reads an optional adjacent `config.json`, otherwise it uses the packaged default. The default port and search limit are controlled by `server.defaultPort` and `server.portSearchAttempts`.
@@ -21,7 +22,7 @@ This creates `MdNotes.exe` in the project folder. Run it there to use the existi
 2. From this project folder, install the TypeScript build tools with `npm install`.
 3. Compile the TypeScript frontend with `npm run build`.
 4. Start the development server with `python src\server.py`.
-5. Open the local URL printed in the terminal. The default port is `8000`; if occupied, the server searches the configured following ports.
+5. Open the local URL printed in the terminal. The default port is `4073`; if occupied, the server searches the configured following ports.
 
 Choose a note in the sidebar and type Markdown. Changes save automatically; **Ctrl+Z** undoes edits and **Ctrl+S** saves immediately.
 

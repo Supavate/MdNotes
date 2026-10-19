@@ -120,7 +120,7 @@ def tree_for(folder: Path, order: dict[str, list[str]] | None = None) -> list[di
         order = load_order()
     items: list[dict[str, object]] = []
     for entry in sorted(folder.iterdir(), key=lambda item: (not item.is_dir(), item.name.casefold())):
-        if entry.is_symlink():
+        if entry.name.casefold() == ".git" or entry.is_symlink():
             continue
         if entry.is_dir():
             items.append(
@@ -271,7 +271,7 @@ class NotesHandler(BaseHTTPRequestHandler):
                 actual_names = {
                     entry.name
                     for entry in folder.iterdir()
-                    if not entry.is_symlink()
+                    if entry.name.casefold() != ".git" and not entry.is_symlink()
                     and (
                         entry.is_dir()
                         or (entry.is_file() and entry.suffix.lower() in TEXT_EXTENSIONS)

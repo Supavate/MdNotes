@@ -15,7 +15,7 @@
     "defaultNoteExtension": ".md"
   },
   "server": {
-    "defaultPort": 8000,
+    "defaultPort": 4073,
     "portSearchAttempts": 100,
     "openBrowser": true
   }

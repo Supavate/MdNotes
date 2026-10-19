@@ -7,7 +7,7 @@ function escapeHtml(text: string): string {
 
 type LinkReference = { destination: string; title: string };
 
-function renderInline(text: string, references: Map<string, LinkReference> = new Map()): string {
+export function renderInline(text: string, references: Map<string, LinkReference> = new Map()): string {
   const protectedHtml: string[] = [];
   const protect = (html: string): string => `\u0000${protectedHtml.push(html) - 1}\u0000`;
   let source = text.replace(/\u0000/g, "").replace(/\\([!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])/g, (_match, escaped: string) =>
@@ -320,7 +320,7 @@ export function renderMarkdownTableHeader(headerLine: string): string | null {
   ].join("\n"));
 }
 
-function inlineMarkdown(node: Node): string {
+export function inlineMarkdown(node: Node): string {
   if (node.nodeType === Node.TEXT_NODE) return node.textContent ?? "";
   if (!(node instanceof Element) ||
     node.getAttribute("contenteditable") === "false") return "";

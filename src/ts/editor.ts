@@ -1,4 +1,4 @@
-import { renderCodeBlock, renderMarkdown, renderMarkdownTableHeader, serializeMarkdown } from "./markdown.js";
+import { inlineMarkdown, renderInline, renderCodeBlock, renderMarkdown, renderMarkdownTableHeader, serializeMarkdown } from "./markdown.js";
 import { errorMessage } from "./dom.js";
 import type { AppConfig } from "./types.js";
 
@@ -29,6 +29,55 @@ export function createEditor({ editor, request, showToast, config }: EditorOptio
   let savedContent = "";
   let saveTimer: number | undefined;
   let saveQueue: Promise<void> = Promise.resolve();
+
+  function updateEditableLinks(): void {
+    const selection = window.getSelection();
+    const range = selection?.rangeCount ? selection.getRangeAt(0) : null;
+    if (range && !selection?.isCollapsed && editor.contains(range.commonAncestorContainer)) return;
+    const container = range?.startContainer;
+    const element = container instanceof Element ? container : container?.parentElement;
+    const line = document.activeElement === editor && selection?.isCollapsed
+      ? element?.closest("p, li, h1, h2, h3, h4, h5, h6, td, th") : null;
+    editor.querySelectorAll<HTMLElement>("[data-editable-link]").forEach((source) => {
+      if (line?.contains(source)) return;
+      const template = document.createElement("template");
+      template.innerHTML = renderInline(source.textContent || "");
+      source.replaceWith(template.content);
+    });
+    if (!line || !editor.contains(line) || !range || !selection) return;
+    line.querySelectorAll<HTMLAnchorElement>("a").forEach((anchor) => {
+      const source = document.createElement("span");
+      source.dataset.editableLink = "";
+      source.textContent = inlineMarkdown(anchor);
+      let offset: number | null = null;
+      if (anchor.contains(range.startContainer)) {
+        const prefix = document.createRange();
+        prefix.selectNodeContents(anchor);
+        prefix.setEnd(range.startContainer, range.startOffset);
+        offset = prefix.toString().length + 1;
+      }
+      anchor.replaceWith(source);
+      if (offset !== null && source.firstChild) {
+        range.setStart(source.firstChild, Math.min(offset, source.textContent.length));
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    });
+  }
+
+  function openLink(event: MouseEvent): void {
+    const target = event.target instanceof Element ? event.target : null;
+    const anchor = target?.closest<HTMLAnchorElement>("a");
+    const source = target?.closest<HTMLElement>("[data-editable-link]");
+    if (!anchor && !source) return;
+    event.preventDefault();
+    if (!event.ctrlKey && !event.metaKey) return;
+    const template = document.createElement("template");
+    if (source) template.innerHTML = renderInline(source.textContent || "");
+    const href = anchor?.getAttribute("href") || template.content.querySelector("a")?.getAttribute("href");
+    if (href && /^(https?:\/\/|mailto:)/i.test(href)) window.open(href, "_blank", "noopener,noreferrer");
+  }
 
   function getContent(): string {
     return serializeMarkdown(editor);
@@ -460,6 +509,13 @@ export function createEditor({ editor, request, showToast, config }: EditorOptio
     startParagraphAfterHeading(event);
   });
   editor.addEventListener("click", copyCode);
+  editor.addEventListener("click", openLink);
+  editor.addEventListener("mousedown", (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.target instanceof Element &&
+        event.target.closest("a, [data-editable-link]")) event.preventDefault();
+  });
+  document.addEventListener("selectionchange", updateEditableLinks);
+  editor.addEventListener("blur", updateEditableLinks);
   editor.addEventListener("copy", copyListWithoutMarkers);
   window.addEventListener("beforeunload", (event) => {
     if (isDirty()) {
